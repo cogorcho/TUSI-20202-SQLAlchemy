@@ -1,5 +1,5 @@
 from modulos.csv import CSV
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, delete
 from sqlalchemy.orm import sessionmaker
 import json
 
@@ -31,7 +31,7 @@ DBSession = sessionmaker(bind=engine)
 # session.rollback()
 session = DBSession()
 
-def agregar_persona(nombre):
+def crear_persona(nombre):
     p = Persona(nombre=nombre)
     session.add(p)
     session.commit()
@@ -45,6 +45,12 @@ def listar_persona(id):
     p = session.query(Persona).filter(Persona.id == id).all()
     for per in p:
         print(per.nombre)
+
+def borrar_persona(id):
+    u = delete(Persona).where(Persona.id == id)
+    result = session.execute(u)
+    print('Delete Persona', id, result.rowcount)
+
 
 def agregar_usuario(email, passwd):
     u = Usuario(email=email)
@@ -108,9 +114,19 @@ if __name__ == '__main__':
     #listar_provincias()
     #listar_localidades(1)
     #listar_escuelas(966)
-    for i in range(3000,3220):
-        listar_escuela(i)
+    #for i in range(3000,3220):
+    #    listar_escuela(i)
 
-    listar_escuela(966)
-    listar_escuela(333)
-    listar_escuela(1710)
+    #listar_escuela(966)
+    #listar_escuela(333)
+    #listar_escuela(1710)
+
+    crear_persona('Juan')
+    crear_persona('Jose')
+    crear_persona('Luis')
+
+    listar_personas()
+
+    borrar_persona(2)
+
+    listar_personas()
